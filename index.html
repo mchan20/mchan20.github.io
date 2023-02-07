@@ -4,7 +4,27 @@
 <html>
   <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JavaScript Input</title>
+    <title>Receipt Splitta</title>
+	<style>
+		input[type='text'],
+		input[type='number'],
+		textarea {
+			font-size: 16px;
+		}
+
+		p {
+			font-size: 19px;
+		}
+
+		body {
+			font-size: 19px;
+		}
+		
+		.submit_everything {
+			font-size: 25px;
+		}
+	</style>
+
     <script>
 		let num_guests = 0;
 		let total_price = 0;
@@ -18,19 +38,17 @@
 			for (let j = 1;j <= num_guests;j++) {
 				ind_total = get_ind_bills(j);
 				total = total + ind_total;
-				console.log(ind_total);
 				// var bruh = document.getElementById("output"+j);
 				// bruh.innerText = total;
 				// bruh.appendChild(document.createElement("br"));
 			}
 			total_price = total;
 
-			for(let i = 1;i<=num_guests;i++) {
-				var bruh = document.getElementById("output"+i);
-				bruh.innerText = "Guest "+ i + "\'s" + " percentage of the tip/tax is: " + Number(parseFloat(get_ind_bills(i)) / parseFloat(total_price));
-				bruh.appendChild(document.createElement("br"));
-			}
-			console.log(total_price);
+			// for(let i = 1;i<=num_guests;i++) {
+			// 	var bruh = document.getElementById("output"+i);
+			// 	bruh.innerText = "Guest "+ i + "\'s" + " percentage of the tip/tax is: " + Number(parseFloat(get_ind_bills(i)) / parseFloat(total_price));
+			// 	bruh.appendChild(document.createElement("br"));
+			// }
 		}
 
 		function get_ind_bills(guest_num){
@@ -68,6 +86,7 @@
 			showStuff("guest_field");
 			showStuff("tips");
 			showStuff("taxes");
+			showStuff("submit_everything");
 			for (var i = 1;i<num_guests;i++) {
 				let elem = document.getElementById("guest_"+i);
 				let clone = elem.cloneNode(true);
@@ -208,6 +227,26 @@
 
 		}
 
+		function submit_everything() {
+			for(let i = 1;i<=num_guests;i++) {
+				var bruh = document.getElementById("output"+i);
+				let percentage = Number(parseFloat(get_ind_bills(i)) / parseFloat(total_price));
+				let tip_amt = Number(tip * (parseFloat(get_ind_bills(i)) / parseFloat(total_price)));
+				let tax_amt = Number(tax * (parseFloat(get_ind_bills(i)) / parseFloat(total_price)));
+
+				// for debugging purposes
+				// bruh.innerText = "Guest "+ i + "\'s" + " percentage of the tip/tax is: " + percentage + "\n" +
+				// 	"Guest "+ i + "\'s" + " tip payment is: " + tip_amt + "\n" +
+				// 	"Guest "+ i + "\'s" + " tax payment is: " + tax_amt + "\n" +
+				// 	"Guest "+ i + "\'s" + " full payment is: " + Number(get_ind_bills(i) + tax_amt + tip_amt);
+
+				bruh.innerText = "Guest "+ i + "\'s" + " full payment is: " + Number(get_ind_bills(i) + tax_amt + tip_amt);
+				
+				bruh.appendChild(document.createElement("br"));
+				bruh.appendChild(document.createElement("br"));
+			}
+		}
+
     </script>
   </head>
   <body>
@@ -240,10 +279,9 @@
 			<br>
 		</div>
 		<!-- ; hideStuff('guest_field') -->
-		<button onclick="getResult();"> 
+		<button onclick="getResult(); showStuff('dishes_confirm');"> 
 			Submit Dishes!
-		</button>
-
+		</button> <p class="dishes_confirm" style="display: none;"> Confirmed Submission! </p>
 	</div>
 
 	<br>
@@ -297,11 +335,28 @@
 		<div id="tax_output_zone"> </div> 
 	</div>
 
+	<button class="submit_everything" onclick="submit_everything(); showStuff('everything_result');" style="display: none;">Submit Everything</button>
+
+
+	<h1 class="everything_result" style="display: none;"> Splitted Bill</h1>
 	<div id="output1"> </div>
 	<div id="output2"> </div>
 	<div id="output3"> </div>
 	<div id="output4"> </div>
 	<div id="output5"> </div>
 	<div id="output6"> </div>
+	<div id="output7"> </div>
+	<div id="output8"> </div>
+	<div id="output9"> </div>
+
+
+
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
   </body>
 </html>
