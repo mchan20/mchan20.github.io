@@ -3,24 +3,27 @@
 <!-- You can just run this html file in your browser and it should work -->
 <html>
   <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JavaScript Input</title>
     <script>
 		let num_guests = 0;
 		let total_price = 0;
-		let tip = 10;
-		let tip_type = "";
+		let tip = 0;
+		let tax = 0;
 
 		function getResult(){
 			// loop through and find the individual bills for the guests
 
+			total = 0;
 			for (let j = 1;j <= num_guests;j++) {
 				ind_total = get_ind_bills(j);
-				total_price = total_price + ind_total;
+				total = total + ind_total;
 				console.log(ind_total);
 				// var bruh = document.getElementById("output"+j);
 				// bruh.innerText = total;
 				// bruh.appendChild(document.createElement("br"));
 			}
+			total_price = total;
 
 			for(let i = 1;i<=num_guests;i++) {
 				var bruh = document.getElementById("output"+i);
@@ -64,6 +67,7 @@
 		function addGuest() {
 			showStuff("guest_field");
 			showStuff("tips");
+			showStuff("taxes");
 			for (var i = 1;i<num_guests;i++) {
 				let elem = document.getElementById("guest_"+i);
 				let clone = elem.cloneNode(true);
@@ -124,7 +128,7 @@
 			// added.appendChild(document.createElement("br"));
 		}
 
-		function submit_tip_type() {
+		function submit_tip() {
 			var ele = document.getElementsByName('tip');
             
 			let val;
@@ -134,11 +138,75 @@
 				}
             }
 			
-			tip_type = val;
-			let outputElement = document.getElementById('tip_output');
-			outputElement.innerText = "You have selected: " + val;
+			let output_1 = document.getElementById('tip_output_1');
+			output_1.innerText = "You have selected: " + val;
+
+			let amt = document.getElementById("tip_amount");
+
+			if (val == "Percentage") {
+				tip = amt.value * total_price * 0.01;
+			}
+			else tip = amt.value;
+
+			let output_2 = document.getElementById('tip_output_2');
+			output_2.innerText = "Your total Tip Amount is: " + tip;
+			
+			var tip_area = document.getElementById("tip_output_zone");
+			tip_area.parentNode.removeChild(tip_area);
+
+			tip_area = document.createElement("div");
+			tip_area.id="tip_output_zone";
+			document.getElementById('tips').appendChild(tip_area);
+
+			for(let i = 1;i<=num_guests;i++) {
+				var bruh = document.createElement("p");
+				bruh.innerText = "Guest "+ i + "\'s" + " tip payment is: " + Number(tip * (parseFloat(get_ind_bills(i)) / parseFloat(total_price)));
+				bruh.className = "tip_ele";
+				tip_area.appendChild(bruh);
+			}
+			console.log(tip_area.childElementCount);
+
 		}
-		
+
+		function submit_tax() {
+			var ele = document.getElementsByName('tax');
+            
+			let val;
+            for(i = 0; i < ele.length; i++) {
+                if(ele[i].checked) {
+                	val = ele[i].value;
+				}
+            }
+			
+			let output_1 = document.getElementById('tax_output_1');
+			output_1.innerText = "You have selected: " + val;
+
+			let amt = document.getElementById("tax_amount");
+
+			if (val == "Percentage") {
+				tax = amt.value * total_price * 0.01;
+			}
+			else tax = amt.value;
+
+			let output_2 = document.getElementById('tax_output_2');
+			output_2.innerText = "Your total Tip Amount is: " + tax;
+			
+			var tax_area = document.getElementById("tax_output_zone");
+			tax_area.parentNode.removeChild(tax_area);
+
+			tax_area = document.createElement("div");
+			tax_area.id="tax_output_zone";
+			document.getElementById('taxes').appendChild(tax_area);
+
+			for(let i = 1;i<=num_guests;i++) {
+				var bruh = document.createElement("p");
+				bruh.innerText = "Guest "+ i + "\'s" + " tax payment is: " + Number(tax * (parseFloat(get_ind_bills(i)) / parseFloat(total_price)));
+				bruh.className = "tax_ele";
+				tax_area.appendChild(bruh);
+			}
+			console.log(tax_area.childElementCount);
+
+		}
 
     </script>
   </head>
@@ -173,29 +241,60 @@
 		</div>
 		<!-- ; hideStuff('guest_field') -->
 		<button onclick="getResult();"> 
-			Submit!
+			Submit Dishes!
 		</button>
 
 	</div>
 
-	<div class="tips" style="display: none;"> 
-		<div class="tip_input"> 
+	<br>
+
+	<div id="tips" class="tips" style="display: none;"> 
+		<div class="tip_type_selection_input"> 
 			<h1> Tip Type Selection</h1>
 			<p> Would you like to enter a tip percentage or a tip value?</p>
 			<form id="tip_type_form" autocomplete="off">
-				
 				<input type="radio" name="tip" id="tip_percentage" value="Percentage">
 				<label for="tip_percentage">Percentage</label><br>
 				<input type="radio" name="tip" id="tip_value" value="Value">
 				<label for="tip_value">Value</label><br>
 			</form>
-			<button onclick="submit_tip_type()">Sus</button>
 		</div>
-		<p id="tip_output"> </p>
+		<p id="tip_output_1"> </p>
+
+		<h4 class="tip_header"> Tip Amount (If percentage, input number excluding the % sign.)</h4>
+		<input type="number" class="tip_value_amount" id="tip_amount">
+
+		<button onclick="submit_tip()">Submit Tip</button>
+		<br>
+
+		<p id="tip_output_2"> </p>
+		<div id="tip_output_zone"> </div> 
+
 	</div>
 
-	<div class="tax_input"> 
-		
+	<br>
+
+	<div id="taxes" class="taxes" style="display: none;"> 
+		<div class="tax_type_selection_input"> 
+			<h1> Tax Type Selection</h1>
+			<p> Would you like to enter a tax percentage or a tax value?</p>
+			<form id="tax_type_form" autocomplete="off">
+				<input type="radio" name="tax" id="tax_percentage" value="Percentage">
+				<label for="tax_percentage">Percentage</label><br>
+				<input type="radio" name="tax" id="tax_value" value="Value">
+				<label for="tax_value">Value</label><br>
+			</form>
+		</div>
+		<p id="tax_output_1"> </p>
+
+		<h4 class="tax_header"> Tax Amount (If percentage, input number excluding the % sign.)</h4>
+		<input type="number" class="tax_value_amount" id="tax_amount">
+
+		<button onclick="submit_tax()">Submit Tax</button>
+		<br>
+
+		<p id="tax_output_2"> </p>
+		<div id="tax_output_zone"> </div> 
 	</div>
 
 	<div id="output1"> </div>
